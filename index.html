@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            border: 1px solid red;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="360" height="512"></canvas>
+    <script src="js/Background.js"></script>
+    <script src="js/Bird.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/Pipe.js"></script>
+    <script>
+    //定义一个数组存放图片
+    var arr = ["images/bird2_0.png", "images/bird2_1.png", "images/bird2_2.png", "images/bg_day.png", "images/land.png", "images/pipe_down.png", "images/pipe_up.png"]
+     
+
+
+     //调用函数
+     loadImage(arr, function(imgArr){
+        
+        //获取元素
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        //初始化
+        var bird = new Bird(imgArr.slice(0, 3), 100, 100);
+        var pipe = new Pipe(imgArr[5], imgArr[6], 4, 360);
+        var land = new Background(imgArr[4], 4, 0, 400);
+        var mountain = new Background(imgArr[3], 2, 0, 0);
+
+        window.g = new Game(ctx, bird, pipe, land, mountain);
+
+     })
+
+
+
+    //游戏需要在图片加载完毕之后进行  所以定义一个图片加载函数
+    function loadImage(arr, callBack){
+        //定义信号量
+        var idx = 0;
+        //定义数组用来存放图片
+        var loadImageArr = [];
+        //图片需要一张一张出来 所以使用foreach遍历
+        arr.forEach(function(value, index){
+            
+            //创建图片元素
+            var img = new Image();
+            //设置图片路径
+            img.src = value;
+            //图片onload事件
+            img.onload = function(){
+                idx++;
+                loadImageArr[index] = this;
+                
+                //要使回调函数是在图片全部加载完之后进行输出  所以要进行判断
+                if (idx === arr.length) {
+                    callBack(loadImageArr);
+                }
+            }
+        })
+    }
+    
+    
+    
+    </script>
+</body>
+</html>
